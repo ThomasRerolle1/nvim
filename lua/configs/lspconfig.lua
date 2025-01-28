@@ -7,6 +7,10 @@ local lspconfig = require "lspconfig"
 local servers = { "html", "cssls" }
 local nvlsp = require "nvchad.configs.lspconfig"
 
+
+require("lspconfig").clangd.setup {}
+require("lspconfig").jdtls.setup {}
+
 -- lsps with default config
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
@@ -15,6 +19,13 @@ for _, lsp in ipairs(servers) do
     capabilities = nvlsp.capabilities,
   }
 end
+
+lspconfig.tsserver.setup({
+  on_attach = function(client, bufnr)
+    -- Désactiver le formatage de tsserver si vous utilisez un autre formatteur
+    client.server_capabilities.documentFormattingProvider = false
+  end,
+})
 
 -- configuring single server, example: typescript
 -- lspconfig.ts_ls.setup {

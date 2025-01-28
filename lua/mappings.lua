@@ -29,3 +29,43 @@ map("n", "<Leader>dt", "<cmd>lua vim.cmd('RustLsp testables')<CR>", { desc = "De
 
 -- Mason
 map("n", "<Leader>q", "<cmd>lua vim.cmd('Mason')<CR>", { desc = "Open Mason" })
+
+map('n', '<leader>ld', require('telescope.builtin').lsp_definitions, {})
+map('n', '<leader>lr', require('telescope.builtin').lsp_references, {})
+
+-- Quitter le terminal avec <Esc>
+map('t', '<Esc>', '<C-\\><C-n>:q<CR>', { desc = "Quit terminal" })
+
+-- Toggle terminal buffer
+map('n', '<leader>tt', function()
+    -- Cherche un buffer de terminal
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        local buf_name = vim.api.nvim_buf_get_name(buf)
+        if buf_name:match("^term://") then
+            -- Si trouvé, switch vers ce buffer
+            vim.api.nvim_set_current_buf(buf)
+            return
+        end
+    end
+    -- Si aucun terminal n'est trouvé, on peut optionnellement en ouvrir un nouveau
+    vim.cmd('terminal')
+end, { desc = "Toggle terminal buffer" })
+
+map("n", "<leader>ti", function()
+  local api = require("nvim-tree.api")
+  api.tree.toggle_gitignore_filter()
+end, { desc = "Toggle .gitignore files" })
+local M = {}
+
+M.general = {
+  n = {
+    -- Voir la documentation de la fonction sous le curseur
+    ["K"] = { function() vim.lsp.buf.hover() end, "Show documentation (hover)" },
+
+    -- Aller à la définition de la fonction
+    ["gd"] = { function() vim.lsp.buf.definition() end, "Go to definition" },
+  },
+}
+
+return M
+
